@@ -71,12 +71,12 @@ Source: [requirements.md](requirements.md). Stack: Python, Flask, SQLite, SSH pu
 
 ## 3. CI (GitHub Actions)
 
-- [ ] **3.1 Workflow file**
+- [x] **3.1 Workflow file**
   - `.github/workflows/ci.yml` on push and pull request: checkout, Python 3.10+, install `requirements.txt`, run `pytest`.
   - **Security:** Pin action versions by SHA or tag. No secrets in the workflow. Do not print env. CI must not SSH to real hosts.
   - **Docs:** README: “CI runs pytest on GitHub”.
 
-- [ ] **3.2 Keep CI local-demo sized**
+- [x] **3.2 Keep CI local-demo sized**
   - Single job. Fail the job if tests fail. No deploy step.
   - **Security:** Workflow has no `pull_request_target` and no write permissions beyond default read.
   - **Docs:** Note in README that deploy stays `python app.py` on the machine running Cursor.
@@ -85,27 +85,27 @@ Source: [requirements.md](requirements.md). Stack: Python, Flask, SQLite, SSH pu
 
 ## 4. Server inventory (SQLite)
 
-- [ ] **4.1 Database file and schema**
+- [x] **4.1 Database file and schema**
   - Create `servers` on startup (`id`, `name`, `host`, `ssh_port`, `ssh_user`, `enabled`, `created_at`). SQLite file under the project, gitignored.
   - **Security:** DB is local only. No SSH passwords in the table (key path comes from env later).
   - **Docs:** README: DB file is created on first run and is not committed.
 
-- [ ] **4.2 List servers (admin page, still empty of metrics)**
+- [x] **4.2 List servers (admin page, still empty of metrics)**
   - `GET /admin/servers` shows rows from SQLite. Link from the top bar.
   - **Security:** Login required. Render text with auto-escape.
   - **Docs:** README: admin page path.
 
-- [ ] **4.3 Add a server**
+- [x] **4.3 Add a server**
   - `POST /admin/servers` with name, host, SSH port (default 22), SSH user. Validate non-empty name/host, port 1–65535, user charset.
   - **Security:** CSRF. Reject unexpected fields. Do not pass host or user into a shell on the app machine.
   - **Docs:** README: fields required to add a Linux host.
 
-- [ ] **4.4 Remove a server**
+- [x] **4.4 Remove a server**
   - `POST /admin/servers/<id>/delete` removes the row.
   - **Security:** POST + CSRF. Login required. Confirm id exists before delete.
   - **Docs:** README: remove stops future collection for that host.
 
-- [ ] **4.5 Tests for inventory**
+- [x] **4.5 Tests for inventory**
   - Pytest with a temp SQLite file: add, list, invalid port rejected, delete.
   - **Security:** Tests must not open network sockets.
   - **Docs:** README: inventory tests use a temp database.
@@ -114,22 +114,22 @@ Source: [requirements.md](requirements.md). Stack: Python, Flask, SQLite, SSH pu
 
 ## 5. SSH collector (read-only)
 
-- [ ] **5.1 Config for the key**
+- [x] **5.1 Config for the key**
   - `SSH_KEY_PATH` from the environment. One key for all demo hosts.
   - **Security:** If the path is missing or not a file, skip SSH and show an error. Do not store key material in SQLite or logs. Recommend mode `0600` in the docs.
   - **Docs:** README: point `SSH_KEY_PATH` at a private key; authorize it on the target.
 
-- [ ] **5.2 SSH connect helper**
+- [x] **5.2 SSH connect helper**
   - Connect with a short timeout (for example 5s). Close the client in a `finally` block.
   - **Security:** No `AutoAddPolicy` without a written demo note. Prefer the system `known_hosts`. No remote shell built from string concatenation of user input.
   - **Docs:** README: targets must already be in `known_hosts` (one `ssh-keyscan` example).
 
-- [ ] **5.3 Test connection**
+- [x] **5.3 Test connection**
   - `POST /admin/servers/test` attempts SSH and returns success or a short error. Do not save on failure unless the user submits Add separately.
   - **Security:** Login + CSRF. Generic error to the UI; detailed reason only in server logs. No command execution beyond a no-op connect or `true`.
   - **Docs:** README: use Test before relying on a host.
 
-- [ ] **5.4 Tests with a fake SSH client**
+- [x] **5.4 Tests with a fake SSH client**
   - Unit-test success, timeout, and auth failure using a stub. No real SSH in CI.
   - **Security:** CI has no network to production hosts.
   - **Docs:** README: collector tests are mocked.
@@ -140,27 +140,27 @@ Source: [requirements.md](requirements.md). Stack: Python, Flask, SQLite, SSH pu
 
 Remote commands stay a fixed allow-list. Parse failures become “metric unavailable”, not an app crash.
 
-- [ ] **6.1 CPU**
+- [x] **6.1 CPU**
   - Read `/proc/stat`, compute overall CPU %. Store on the snapshot model (column or JSON).
   - **Security:** Command string is a constant. Timeout the exec. Do not log full remote output.
   - **Docs:** README: CPU is a single percent from `/proc/stat`.
 
-- [ ] **6.2 Memory**
+- [x] **6.2 Memory**
   - Parse `/proc/meminfo` into used and total bytes.
   - **Security:** Same allow-list and timeout rules as CPU.
   - **Docs:** README: memory shown as percent and MB/GB.
 
-- [ ] **6.3 Network**
+- [x] **6.3 Network**
   - Parse `/proc/net/dev` per interface (skip `lo` in the UI). Keep the previous counters in memory so the UI can show a rate.
   - **Security:** Read-only file read only. Cap the number of interfaces stored.
   - **Docs:** README: RX/TX bytes and a simple rate when two samples exist.
 
-- [ ] **6.4 Listening ports**
+- [x] **6.4 Listening ports**
   - Parse `ss -tuln` (process name only if `ss -tulnp` works without sudo). Show protocol, address, port.
   - **Security:** Do not require sudo. Drop process names if the command fails and still show ports.
   - **Docs:** README: listening ports only; tested on Ubuntu-like `ss`.
 
-- [ ] **6.5 Parser unit tests**
+- [x] **6.5 Parser unit tests**
   - Feed fixture text files for each parser, including one bad sample per metric.
   - **Security:** Fixtures contain no real hostnames, keys, or customer data.
   - **Docs:** README: fixtures live under `tests/fixtures/`.
@@ -169,17 +169,17 @@ Remote commands stay a fixed allow-list. Parse failures become “metric unavail
 
 ## 7. Poller and snapshots
 
-- [ ] **7.1 `metric_snapshots` table**
+- [x] **7.1 `metric_snapshots` table**
   - Columns from the PRD: `server_id`, `collected_at`, CPU, memory, `network_json`, `ports_json`, `error`. Keep the latest row per server for the demo.
   - **Security:** JSON is data, not code. Do not `eval` it.
   - **Docs:** README: only the latest sample is kept.
 
-- [ ] **7.2 Background poll loop**
+- [x] **7.2 Background poll loop**
   - Every 15 seconds, poll enabled servers one at a time. Write the snapshot. Record duration and SSH errors in logs.
   - **Security:** Fixed command list. Per-host timeout. A failure on one host must not stop the loop.
   - **Docs:** README: default interval 15s and that the UI reads the cache, not live SSH.
 
-- [ ] **7.3 Tests for the poller**
+- [x] **7.3 Tests for the poller**
   - Fake SSH returns fixture output. Assert a snapshot row and an error row when the stub raises.
   - **Security:** No real network.
   - **Docs:** README: poller test uses the stub.
@@ -188,37 +188,37 @@ Remote commands stay a fixed allow-list. Parse failures become “metric unavail
 
 ## 8. Wire the read-only UI to data
 
-- [ ] **8.1 Fleet from the database**
+- [x] **8.1 Fleet from the database**
   - `GET /` lists servers plus last CPU %, memory %, status, and last check time.
   - **Security:** Still no write controls. Login required. Escape names and hosts.
   - **Docs:** README: fleet columns.
 
-- [ ] **8.2 Status colors**
+- [x] **8.2 Status colors**
   - Green when the last poll succeeded, red when `error` is set, amber when CPU ≥ 90% (constant in code).
   - **Security:** Threshold is not user input.
   - **Docs:** README: color meanings in one sentence.
 
-- [ ] **8.3 Detail page**
+- [x] **8.3 Detail page**
   - `GET /servers/<id>` shows CPU, memory, network table, and ports from the latest snapshot. Unknown id returns 404.
   - **Security:** Login required. 404 body stays generic.
   - **Docs:** README: open a row to see detail.
 
-- [ ] **8.4 Read-only JSON for refresh**
+- [x] **8.4 Read-only JSON for refresh**
   - `GET /api/servers` and `GET /api/servers/<id>/metrics` return the same cached data.
   - **Security:** Session required. GET only. No methods that insert, update, or delete.
   - **Docs:** README: JSON routes exist for the UI refresh only.
 
-- [ ] **8.5 Auto-refresh**
+- [x] **8.5 Auto-refresh**
   - Fleet and detail fetch JSON every 15s and update the page without a full reload. Manual refresh button is optional and still GET.
   - **Security:** Same-origin fetch only. No `innerHTML` with unescaped server strings (use `textContent` or a template that escapes).
   - **Docs:** README: pages refresh every 15s.
 
-- [ ] **8.6 Partial failure**
+- [x] **8.6 Partial failure**
   - If one metric is missing, show “metric unavailable” in that section. Other servers and sections still render.
   - **Security:** Show a short error string, not stack traces or SSH banners.
   - **Docs:** README: unreachable hosts stay on the fleet list with an error.
 
-- [ ] **8.7 UI tests**
+- [x] **8.7 UI tests**
   - Flask test client: fleet and detail render fixture snapshots; API returns 302 or 401 when logged out and 200 when logged in.
   - **Security:** Assert write methods on `/api/*` are not implemented (405 or 404).
   - **Docs:** README: UI tests do not need a browser.
@@ -227,17 +227,17 @@ Remote commands stay a fixed allow-list. Parse failures become “metric unavail
 
 ## 9. Finish the local demo
 
-- [ ] **9.1 Logging**
+- [x] **9.1 Logging**
   - Log poll start, duration, and SSH failure at INFO/WARNING. Do not log passwords, key contents, or full command output.
   - **Security:** Logs go to stdout only for the demo.
   - **Docs:** README: where to look when a host stays red.
 
-- [ ] **9.2 Demo walkthrough**
+- [x] **9.2 Demo walkthrough**
   - Add a short “Demo script” to the README: login, add host, test SSH, wait 15s, open detail, remove host.
   - **Security:** Repeat localhost bind, key permissions, and “do not expose this app to the internet”.
   - **Docs:** This step is the demo script. Keep it under one screen.
 
-- [ ] **9.3 CI still green**
+- [x] **9.3 CI still green**
   - Push the workflow path only. Confirm GitHub Actions runs pytest with no SSH and no secrets.
   - **Security:** If a test tries to open port 22, delete that test.
   - **Docs:** README stays the only setup guide.

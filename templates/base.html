@@ -9,7 +9,15 @@
 <body>
   <header class="topbar">
     <div class="topbar-inner">
-      <a class="product-name" href="{{ url_for('fleet') }}">Server Monitor</a>
+      <div class="brand">
+        <a class="product-name" href="{{ url_for('fleet') }}">Server Monitor</a>
+        {% if session.get('logged_in') %}
+        <nav class="nav" aria-label="Primary">
+          <a href="{{ url_for('fleet') }}">Fleet</a>
+          <a href="{{ url_for('admin_servers') }}">Servers</a>
+        </nav>
+        {% endif %}
+      </div>
       {% if session.get('logged_in') %}
       <form method="post" action="{{ url_for('logout') }}" class="logout-form">
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
@@ -19,7 +27,13 @@
     </div>
   </header>
   <main class="page">
+    {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+      <p class="notice" role="status">{{ message }}</p>
+      {% endfor %}
+    {% endwith %}
     {% block content %}{% endblock %}
   </main>
+  {% block scripts %}{% endblock %}
 </body>
 </html>

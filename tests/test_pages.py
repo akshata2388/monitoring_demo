@@ -64,35 +64,36 @@ class PageTests(unittest.TestCase):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         body = response.get_data(as_text=True)
-        for column in ("Name", "Host", "Status", "CPU", "Memory"):
+        for column in ("Name", "Host", "Status", "CPU", "Memory", "Last check"):
             self.assertIn(column, body)
         self.assertIn("No servers yet.", body)
         self.assertIn(">Logout<", body)
         self.assertEqual(body.lower().count("<form"), 1)
-        self.assertNotIn("<script", body.lower())
+        self.assertEqual(body.lower().count("<script"), 1)
+        self.assertIn("/static/refresh.js", body)
+        self.assertNotIn("innerHTML", body)
+        self.assertNotIn("Remove", body)
 
     def test_fleet_rejects_writes(self):
         self.assertEqual(self.client.post("/").status_code, 405)
 
-    def test_detail_shows_empty_sections(self):
+    def test_unknown_detail_is_generic(self):
         response = self.client.get("/servers/sample")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         body = response.get_data(as_text=True)
-        self.assertIn("Server sample", body)
-        for section in ("CPU", "Memory", "Network", "Ports"):
-            self.assertIn(section, body)
-        self.assertEqual(body.lower().count("<form"), 1)
-        self.assertNotIn("<script", body.lower())
+        self.assertIn("Not found", body)
+        self.assertNotIn("sample", body)
+        self.assertNotIn("<b>", body)
 
-    def test_detail_escapes_the_id(self):
-        response = self.client.get("/servers/<b>injected")
-        self.assertEqual(response.status_code, 200)
+    def test_unknown_numeric_detail_hides_the_id(self):
+        response = self.client.get("/servers/4242")
+        self.assertEqual(response.status_code, 404)
         body = response.get_data(as_text=True)
-        self.assertIn("Server &lt;b&gt;injected", body)
-        self.assertNotIn("<b>injected", body)
+        self.assertIn("Not found", body)
+        self.assertNotIn("4242", body)
 
     def test_detail_rejects_writes(self):
-        self.assertEqual(self.client.post("/servers/sample").status_code, 405)
+        self.assertEqual(self.client.post("/servers/1").status_code, 405)
 
 
 if __name__ == "__main__":

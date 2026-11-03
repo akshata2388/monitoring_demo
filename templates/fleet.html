@@ -1,34 +1,47 @@
 {% extends "base.html" %}
 {% block title %}Fleet — Server Monitor{% endblock %}
 {% block content %}
-  <h1>Fleet</h1>
-  <p class="lede">Registered Linux servers.</p>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Host</th>
-          <th>Status</th>
-          <th>CPU</th>
-          <th>Memory</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for server in servers %}
-        <tr>
-          <td>{{ server.name }}</td>
-          <td>{{ server.host }}</td>
-          <td>{{ server.status }}</td>
-          <td>{{ server.cpu }}</td>
-          <td>{{ server.memory }}</td>
-        </tr>
-        {% else %}
-        <tr>
-          <td class="empty" colspan="5">No servers yet.</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+  <div id="live" data-refresh-url="{{ url_for('api_servers') }}" data-refresh-kind="fleet" data-refresh-ms="15000">
+    <h1>Fleet</h1>
+    <p class="lede">Registered Linux servers. Green means the last poll succeeded, amber means CPU is at least 90%, and red means the last poll recorded an error.</p>
+    <button type="button" class="refresh" id="refresh-now">Refresh</button>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Host</th>
+            <th>Status</th>
+            <th>CPU</th>
+            <th>Memory</th>
+            <th>Last check</th>
+          </tr>
+        </thead>
+        <tbody id="fleet-body">
+          {% for server in servers %}
+          <tr>
+            <td><a href="{{ url_for('server_detail', server_id=server.id) }}">{{ server.name }}</a></td>
+            <td>{{ server.host }}</td>
+            <td>
+              <span class="status status-{{ server.status }}">{{ server.status_label }}</span>
+              {% if server.error %}
+              <span class="status-error">{{ server.error }}</span>
+              {% endif %}
+            </td>
+            <td>{{ server.cpu }}</td>
+            <td>{{ server.memory }}</td>
+            <td>{{ server.checked }}</td>
+          </tr>
+          {% else %}
+          <tr>
+            <td class="empty" colspan="6">No servers yet.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
   </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{{ url_for('static', filename='refresh.js') }}"></script>
 {% endblock %}

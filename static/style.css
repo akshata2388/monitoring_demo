@@ -42,6 +42,28 @@ body {
   gap: 1rem;
 }
 
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  min-width: 0;
+}
+
+.nav {
+  display: flex;
+  gap: 0.9rem;
+}
+
+.nav a {
+  color: inherit;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav a:hover {
+  text-decoration: underline;
+}
+
 .logout-form {
   margin: 0;
 }
@@ -146,6 +168,93 @@ tbody tr:last-child td {
 .empty {
   margin: 0;
   color: var(--muted);
+}
+
+.table-wrap a {
+  color: var(--bar);
+  font-weight: 600;
+}
+
+.status {
+  display: inline-block;
+  padding: 0.1rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.status-up {
+  background: #e5f6ea;
+  color: #146c2e;
+}
+
+.status-down {
+  background: #fde8e8;
+  color: #9b1c1c;
+}
+
+.status-warn {
+  background: #fff4d6;
+  color: #8a5a00;
+}
+
+.status-pending {
+  background: #eef2f6;
+  color: #5c6b7a;
+}
+
+.status-error {
+  display: block;
+  margin-top: 0.25rem;
+  color: #9b1c1c;
+  font-size: 0.9rem;
+}
+
+.refresh {
+  margin: 0 0 1rem;
+  padding: 0.35rem 0.75rem;
+  font: inherit;
+  color: inherit;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.notice {
+  margin: 0 0 1rem;
+  color: #146c2e;
+}
+
+.card.wide {
+  max-width: 36rem;
+  margin-bottom: 1.25rem;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.card button.secondary {
+  color: var(--bar);
+  background: transparent;
+  border: 1px solid var(--line);
+}
+
+.row-actions {
+  margin: 0;
+}
+
+.danger {
+  padding: 0.25rem 0.6rem;
+  font: inherit;
+  color: #9b1c1c;
+  background: transparent;
+  border: 1px solid #e4b4b4;
+  border-radius: 0.4rem;
+  cursor: pointer;
 }
 
 .card {

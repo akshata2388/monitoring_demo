@@ -1,22 +1,78 @@
 {% extends "base.html" %}
-{% block title %}Server {{ server_id }} — Server Monitor{% endblock %}
+{% block title %}{{ server.name }} — Server Monitor{% endblock %}
 {% block content %}
-  <h1>Server {{ server_id }}</h1>
-  <p class="lede">Latest sample for this host. Nothing has been collected yet.</p>
-  <section class="metric" aria-labelledby="cpu-heading">
-    <h2 id="cpu-heading">CPU</h2>
-    <p class="empty">No data yet.</p>
-  </section>
-  <section class="metric" aria-labelledby="memory-heading">
-    <h2 id="memory-heading">Memory</h2>
-    <p class="empty">No data yet.</p>
-  </section>
-  <section class="metric" aria-labelledby="network-heading">
-    <h2 id="network-heading">Network</h2>
-    <p class="empty">No data yet.</p>
-  </section>
-  <section class="metric" aria-labelledby="ports-heading">
-    <h2 id="ports-heading">Ports</h2>
-    <p class="empty">No data yet.</p>
-  </section>
+  <div id="live" data-refresh-url="{{ url_for('api_server_metrics', server_id=server.id) }}" data-refresh-kind="detail" data-refresh-ms="15000">
+    <h1 id="server-name">{{ server.name }}</h1>
+    <p class="lede">Linux · <span id="server-host">{{ server.host }}</span> · last check <span id="checked-at">{{ server.checked }}</span></p>
+    <p>
+      <span id="status-label" class="status status-{{ server.status }}">{{ server.status_label }}</span>
+      <span id="status-error" class="status-error" {% if not server.error %}hidden{% endif %}>{{ server.error }}</span>
+    </p>
+    <button type="button" class="refresh" id="refresh-now">Refresh</button>
+    <section class="metric" aria-labelledby="cpu-heading">
+      <h2 id="cpu-heading">CPU</h2>
+      <p id="cpu-value">{{ server.cpu }}</p>
+    </section>
+    <section class="metric" aria-labelledby="memory-heading">
+      <h2 id="memory-heading">Memory</h2>
+      <p id="memory-value">{{ server.memory }}</p>
+    </section>
+    <section class="metric" aria-labelledby="network-heading">
+      <h2 id="network-heading">Network</h2>
+      <p id="network-message" class="empty" {% if server.network %}hidden{% endif %}>{{ server.network_message }}</p>
+      <div class="table-wrap" id="network-table" {% if not server.network %}hidden{% endif %}>
+        <table>
+          <thead>
+            <tr>
+              <th>Interface</th>
+              <th>RX</th>
+              <th>TX</th>
+              <th>RX rate</th>
+              <th>TX rate</th>
+            </tr>
+          </thead>
+          <tbody id="network-body">
+            {% for row in server.network %}
+            <tr>
+              <td>{{ row.iface }}</td>
+              <td>{{ row.rx }}</td>
+              <td>{{ row.tx }}</td>
+              <td>{{ row.rx_rate }}</td>
+              <td>{{ row.tx_rate }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <section class="metric" aria-labelledby="ports-heading">
+      <h2 id="ports-heading">Ports</h2>
+      <p id="ports-message" class="empty" {% if server.ports %}hidden{% endif %}>{{ server.ports_message }}</p>
+      <div class="table-wrap" id="ports-table" {% if not server.ports %}hidden{% endif %}>
+        <table>
+          <thead>
+            <tr>
+              <th>Protocol</th>
+              <th>Address</th>
+              <th>Port</th>
+              <th>Process</th>
+            </tr>
+          </thead>
+          <tbody id="ports-body">
+            {% for row in server.ports %}
+            <tr>
+              <td>{{ row.protocol }}</td>
+              <td>{{ row.address }}</td>
+              <td>{{ row.port }}</td>
+              <td>{{ row.process }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+{% endblock %}
+{% block scripts %}
+  <script src="{{ url_for('static', filename='refresh.js') }}"></script>
 {% endblock %}
