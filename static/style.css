@@ -1,0 +1,200 @@
+:root {
+  color-scheme: light;
+  --ink: #1c2430;
+  --muted: #5c6b7a;
+  --line: #d8e0e8;
+  --paper: #ffffff;
+  --canvas: #f3f6f9;
+  --bar: #16324f;
+  --bar-ink: #f4f7fb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--ink);
+  background: var(--canvas);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+}
+
+.topbar {
+  background: var(--bar);
+  color: var(--bar-ink);
+}
+
+.topbar-inner {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 0.9rem 1.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.logout-form {
+  margin: 0;
+}
+
+.logout {
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  border-radius: 0.4rem;
+  padding: 0.3rem 0.75rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.logout:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.product-name {
+  color: inherit;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+}
+
+.product-name:hover {
+  text-decoration: underline;
+}
+
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+  padding: 1.75rem 1.25rem 3rem;
+}
+
+h1 {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.lede {
+  margin: 0 0 1.25rem;
+  color: var(--muted);
+}
+
+.table-wrap {
+  overflow-x: auto;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 36rem;
+}
+
+th,
+td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+th {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  background: #f7fafc;
+  border-bottom: 1px solid var(--line);
+}
+
+td {
+  border-bottom: 1px solid var(--line);
+}
+
+tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.metric {
+  margin: 0 0 0.85rem;
+  padding: 1rem 1.1rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+}
+
+.empty {
+  margin: 0;
+  color: var(--muted);
+}
+
+.card {
+  max-width: 24rem;
+  padding: 1.1rem 1.2rem 1.25rem;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0.6rem;
+}
+
+.card label {
+  display: block;
+  margin: 0.85rem 0 0.3rem;
+  font-weight: 600;
+}
+
+.card input:not([type="hidden"]) {
+  width: 100%;
+  padding: 0.5rem 0.65rem;
+  font: inherit;
+  color: inherit;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 0.4rem;
+}
+
+.card button[type="submit"] {
+  margin-top: 1rem;
+  padding: 0.5rem 0.9rem;
+  font: inherit;
+  font-weight: 600;
+  color: var(--bar-ink);
+  background: var(--bar);
+  border: 0;
+  border-radius: 0.4rem;
+  cursor: pointer;
+}
+
+.error {
+  margin: 0;
+  color: #8a2b2b;
+}
+
+@media (max-width: 40rem) {
+  .page {
+    padding: 1.25rem 0.9rem 2rem;
+  }
+
+  h1 {
+    font-size: 1.45rem;
+  }
+}

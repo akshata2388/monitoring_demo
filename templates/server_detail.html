@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}Server {{ server_id }} — Server Monitor{% endblock %}
+{% block content %}
+  <h1>Server {{ server_id }}</h1>
+  <p class="lede">Latest sample for this host. Nothing has been collected yet.</p>
+  <section class="metric" aria-labelledby="cpu-heading">
+    <h2 id="cpu-heading">CPU</h2>
+    <p class="empty">No data yet.</p>
+  </section>
+  <section class="metric" aria-labelledby="memory-heading">
+    <h2 id="memory-heading">Memory</h2>
+    <p class="empty">No data yet.</p>
+  </section>
+  <section class="metric" aria-labelledby="network-heading">
+    <h2 id="network-heading">Network</h2>
+    <p class="empty">No data yet.</p>
+  </section>
+  <section class="metric" aria-labelledby="ports-heading">
+    <h2 id="ports-heading">Ports</h2>
+    <p class="empty">No data yet.</p>
+  </section>
+{% endblock %}
